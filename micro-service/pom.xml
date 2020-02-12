@@ -9,6 +9,7 @@
     <modules>
         <module>message-thrift-service-api</module>
         <module>user-thrift-service-api</module>
+        <module>user-thrift-service</module>
     </modules>
     <name>micro-service</name>
 	<description>Demo project for Spring Boot</description>
