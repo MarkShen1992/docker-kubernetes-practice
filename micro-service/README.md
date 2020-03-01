@@ -1,25 +1,5 @@
-# 用户服务
-- 用户登录
-- 用户注册
-- 用户基本信息查询
-- 无状态，无session
-- 单点登录
+# 开发原则
 
-# 课程服务
-- 登录验证
-- 课程的CRUD
-
-# 信息服务
-- 发邮件
-- 发短信
-
-# 用户的 EdgeService
-# 课程的 EdgeService
-# API GATEWAY
-
-# 服务调用关系
-
-开发原则
 - 找一些对别人依赖少的模块先开发
 
 Thrift 安装
@@ -180,5 +160,44 @@ Commands:
   wait        Block until one or more containers stop, then print their exit codes
 
 Run 'docker COMMAND --help' for more information on a command.
+
+# 把变化的东西挂在到本机
 ```
 
+# 开发过程
+
+微服务开发场景，即业务场景，分析业务场景 => 划分业务，划分微服务，每个服务都实现什么样的功能，服务之间的关系，谁依赖谁，如何通讯。
+
+
+
+## 业务场景
+
+用户可以注册和登录
+
+登录用户可以对课程进行CRUD操作
+
+# 用户服务
+
+- 用户登录
+- 用户注册
+- 用户基本信息查询
+- 无状态，无session
+- 单点登录
+
+# 课程服务
+
+- 登录验证
+- 课程的CRUD
+
+# 信息服务
+
+- 发邮件
+- 发短信
+
+# 用户的 EdgeService
+
+# 课程的 EdgeService
+
+# API GATEWAY
+
+# 服务调用关系
