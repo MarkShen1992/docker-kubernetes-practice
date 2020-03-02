@@ -16,6 +16,6 @@ public interface UserDao {
     UserInfo getUserByName(@Param("username") String username);
 
     @Insert("INSERT INTO pe_user (username, password, realname, mobile, email) " +
-            "VALUES (#{u.username}, #{u.password}, #{u.realname}, #{u.mobile}, #{u.email})")
+            "VALUES (#{u.username}, #{u.password}, #{u.realName}, #{u.mobile}, #{u.email})")
     void register(@Param("u") UserInfo userInfo);
 }

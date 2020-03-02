@@ -25,6 +25,7 @@ public class UserServiceImpl implements UserService.Iface {
 
     @Override
     public void registerUser(UserInfo userInfo) throws TException {
+        System.out.println(userInfo.getPassword());
         userDao.register(userInfo);
     }
 }
