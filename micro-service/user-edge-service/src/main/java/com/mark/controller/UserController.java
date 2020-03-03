@@ -1,6 +1,6 @@
 package com.mark.controller;
 
-import com.mark.dto.UserDTO;
+import com.mark.thrift.dto.UserDTO;
 import com.mark.redis.RedisClient;
 import com.mark.response.LoginResponse;
 import com.mark.response.Response;
@@ -12,15 +12,14 @@ import org.apache.tomcat.util.buf.HexUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.MessageDigest;
 import java.util.Random;
 
 @Controller
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
@@ -29,7 +28,12 @@ public class UserController {
     @Autowired
     private RedisClient redisClient;
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
+
+    @PostMapping("/login")
     @ResponseBody
     public Response login(@RequestParam("username") String username,
                           @RequestParam("password") String password) {
@@ -56,7 +60,13 @@ public class UserController {
         return new LoginResponse(token);
     }
 
-    @RequestMapping(value = "/sendVerifyCode", method = RequestMethod.POST)
+    @PostMapping("/authentication")
+    @ResponseBody
+    public UserDTO authentication(@RequestHeader("token") String token) {
+        return redisClient.get(token);
+    }
+
+    @PostMapping("/sendVerifyCode")
     @ResponseBody
     public Response sendVerifyCode(@RequestParam(value = "mobile", required = false) String mobile,
                                    @RequestParam(value = "email", required = false) String email) {
@@ -84,7 +94,7 @@ public class UserController {
         return Response.SUCCESS;
     }
 
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    @PostMapping("/register")
     @ResponseBody
     public Response register(@RequestParam("username") String username,
                              @RequestParam("password") String password,

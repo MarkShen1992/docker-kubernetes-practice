@@ -1,4 +1,4 @@
-package com.mark.dto;
+package com.mark.thrift.dto;
 
 import java.io.Serializable;
 
