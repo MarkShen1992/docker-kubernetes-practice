@@ -15,6 +15,7 @@
         <module>course-dubbo-service-api</module>
         <module>course-dubbo-service</module>
         <module>course-edge-service</module>
+        <module>api-gateway-zuul</module>
     </modules>
     <name>micro-service</name>
 	<description>Demo project for Spring Boot</description>

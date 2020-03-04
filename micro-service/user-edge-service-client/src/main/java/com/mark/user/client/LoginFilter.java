@@ -1,11 +1,9 @@
 package com.mark.user.client;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.mark.thrift.dto.UserDTO;
-import jdk.internal.util.xml.impl.Input;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -59,7 +57,7 @@ public abstract class LoginFilter implements Filter {
             }
         }
         if (userDTO == null) {
-            response.sendRedirect("http://127.0.0.1:8082/user/login");
+            response.sendRedirect("http://www.shenjy.com/user/login");
             return;
         }
 
@@ -71,7 +69,7 @@ public abstract class LoginFilter implements Filter {
     protected abstract void login(HttpServletRequest request, HttpServletResponse response, UserDTO userDTO);
 
     private UserDTO requestUserInfo(String token) {
-        String url = "http://127.0.0.1:8082/user/authentication";
+        String url = "http://www.shenjy.com/user/authentication";
 
         // 使用HTTP Client来调用
         HttpClient client = new DefaultHttpClient();
