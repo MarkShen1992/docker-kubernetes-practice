@@ -58,4 +58,16 @@ public class UserDTO implements Serializable {
     public void setRealName(String realName) {
         this.realName = realName;
     }
+
+    @Override
+    public String toString() {
+        return "UserDTO{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", mobile='" + mobile + '\'' +
+                ", email='" + email + '\'' +
+                ", realName='" + realName + '\'' +
+                '}';
+    }
 }
