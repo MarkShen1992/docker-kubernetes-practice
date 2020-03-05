@@ -9,7 +9,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <groupId>com.mark</groupId>
     <artifactId>course-dubbo-service</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
     <name>course-dubbo-service</name>
 
     <properties>

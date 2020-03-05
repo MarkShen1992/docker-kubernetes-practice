@@ -1,0 +1,4 @@
+FROM python:3.7
+MAINTAINER MarkShen markshen1992@gmail.com
+
+RUN pip install thrift

@@ -1,6 +1,6 @@
-注意：要配置 hosts 文件，进行映射
+# Docker 运行容器命令
 ```
-127.0.0.1 www.shenjy.com
+docker run -it user-service:latest --mysql.address=192.168.1.101 --username=root --password=aA111111
 ```
 
 # build.sh 不能运行
@@ -10,10 +10,4 @@
 vim build.sh
 :set ff=unix
 :wq
-```
-
-# docker 运行
-
-```
-docker run -it api-gateway-zuul:latest
 ```
