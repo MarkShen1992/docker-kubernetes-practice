@@ -69,7 +69,7 @@ public abstract class LoginFilter implements Filter {
     protected abstract void login(HttpServletRequest request, HttpServletResponse response, UserDTO userDTO);
 
     private UserDTO requestUserInfo(String token) {
-        String url = "http://www.shenjy.com/user/authentication";
+        String url = "http://user-edge-service:8082/user/authentication";
 
         // 使用HTTP Client来调用
         HttpClient client = new DefaultHttpClient();

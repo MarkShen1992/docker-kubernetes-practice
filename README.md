@@ -1,2 +1,2 @@
 # docker-kubernetes-practice
-docker kubernetes 学习笔记
+学习本项目，请先阅读 docs 文件夹下的 文件。

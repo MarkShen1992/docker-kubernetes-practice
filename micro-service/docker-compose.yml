@@ -1,0 +1,46 @@
+# https://docs.docker.com/compose/compose-file/
+version: '3.7'
+
+services:
+  message-service:
+    image: message-service:latest
+
+  user-service:
+    image: user-service:latest
+    command:
+      - "--mysql.address=192.168.1.102"
+      - "--username=root"
+      - "--password=aA111111"
+
+  user-edge-service:
+    image: user-edge-service:latest
+    links:
+      - user-service
+      - message-service
+    command:
+      - "--redis.address=192.168.1.102"
+
+  course-service:
+    image: course-dubbo-service:latest
+    links:
+      - user-service
+    command:
+      - "--mysql.address=192.168.1.102"
+      - "--username=root"
+      - "--password=aA111111"
+      - "--zk.address=192.168.1.102"
+
+  course-edge-service:
+    image: course-edge-service:latest
+    links:
+      - user-edge-service
+    command:
+      - "--zk.address=192.168.1.102"
+
+  api-gateway-zuul:
+    image: api-gateway-zuul:latest
+    links:
+      - user-edge-service
+      - course-edge-service
+    ports:
+    - 80:8080
