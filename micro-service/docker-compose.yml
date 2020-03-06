@@ -11,8 +11,8 @@ services:
     container_name: user-service
     command:
       - "--mysql.address=192.168.1.102"
-      - "--username=shenjy"
-      - "--password=123456"
+      - "--username=root"
+      - "--password=aA111111"
 
   user-edge-service:
     image: user-edge-service:latest
@@ -30,8 +30,8 @@ services:
       - user-service
     command:
       - "--mysql.address=192.168.1.102"
-      - "--username=shenjy"
-      - "--password=123456"
+      - "--username=root"
+      - "--password=aA111111"
       - "--zk.address=192.168.1.102"
 
   course-edge-service:
@@ -49,4 +49,4 @@ services:
       - user-edge-service
       - course-edge-service
     ports:
-    - 80:80
+      - 80:80
