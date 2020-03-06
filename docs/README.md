@@ -43,7 +43,7 @@ docker-compose 使用命令
 
 ```
 docker-compose up -d --启动服务
-docker-compose down -d --关闭服务
+docker-compose down --关闭服务
 docker-compose up -d service-name --单独启动某个服务
 ```
 
@@ -52,4 +52,47 @@ docker-compose up -d service-name --单独启动某个服务
 **Note:** 使用 docker-compose up -d 来启动所有容器的时候，开启程序对应的端口号
 
 - [Linux环境下开启端口号命令](https://markshen1992.github.io/document/devops/ops/linux/linux_basic_command.html)
+
+# 镜像仓库
+
+## 分类
+
+- 共有仓库， 像 [docker hub](https://hub.docker.com)
+- 私有仓库，有两种 [registry](https://hub.docker.com/_/registry), [harbor](https://goharbor.io/), [nexus](https://my.sonatype.com/)
+
+## 每种镜像仓库的使用
+
+### 1. docker hub 的使用
+
+- 需要先在 [官网](https://hub.docker.com)上注册账号
+
+  ```
+  docker login
+  docker push image_name
+  docker pull image_name
+  ```
+
+### 2. registry 的使用
+
+- registry安装并运行registry:2
+
+  ```
+  docker pull registry
+  docker run -d -p 5000:5000 --restart always --name registry registry:2
+  ```
+
+- 一个完整的教程-把 registry:sjy 上传到 registry 上
+
+  ```
+  # step 01 registry安装并运行registry:2
+  
+  # step 02 registry:2 => localhost:5000/registry:sjy
+  docker tag registry:2 localhost:5000/registry:sjy
+  
+  # step 03 推镜像到 registry:2 仓库
+  docker push localhost:5000/registry:sjy
+  
+  # step 04 pull 到本地
+  docker pull localhost:5000/registry:sjy
+  ```
 
