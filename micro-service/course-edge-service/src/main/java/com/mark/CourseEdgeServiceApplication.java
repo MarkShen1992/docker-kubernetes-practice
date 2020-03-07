@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootApplication
-public class CourseDubboServiceConsumerApplication {
+public class CourseEdgeServiceApplication {
 
     @Bean
     public FilterRegistrationBean filterRegistrationBean() {
@@ -25,6 +25,6 @@ public class CourseDubboServiceConsumerApplication {
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(CourseDubboServiceConsumerApplication.class, args);
+        SpringApplication.run(CourseEdgeServiceApplication.class, args);
     }
 }

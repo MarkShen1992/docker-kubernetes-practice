@@ -6,32 +6,32 @@ services:
     image: message-service:latest
     container_name: message-service
 
-  user-service:
-    image: user-service:latest
-    container_name: user-service
+  user-thrift-service:
+    image: user-thrift-service:latest
+    container_name: user-thrift-service
     command:
       - "--mysql.address=192.168.1.102"
-      - "--username=root"
-      - "--password=aA111111"
+      - "--mysql.username=root"
+      - "--mysql.password=aA111111"
 
   user-edge-service:
     image: user-edge-service:latest
     container_name: user-edge-service
     links:
-      - user-service
+      - user-thrift-service
       - message-service
     command:
       - "--redis.address=192.168.1.102"
 
-  course-service:
+  course-dubbo-service:
     image: course-dubbo-service:latest
-    container_name: course-service
+    container_name: course-dubbo-service
     links:
-      - user-service
+      - user-thrift-service
     command:
       - "--mysql.address=192.168.1.102"
-      - "--username=root"
-      - "--password=aA111111"
+      - "--mysql.username=root"
+      - "--mysql.password=aA111111"
       - "--zk.address=192.168.1.102"
 
   course-edge-service:
