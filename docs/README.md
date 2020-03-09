@@ -4,17 +4,61 @@
 
 # 容器的 Endpoint 配置
 
-| 服务名称            | IP地址        | 端口号 |
-| :------------------ | :------------ | :----- |
-| user-service        | 192.168.1.102 | 7911   |
-| user-edge-service   | 192.168.1.102 | 8082   |
-| message-service     | 192.168.1.102 | 9090   |
-| course-service      | 192.168.1.102 | 8081   |
-| course-edge-service | 192.168.1.102 | 8083   |
-| api-gateway-zuul    | 192.168.1.102 | 8080   |
-| mysql               | 192.168.1.102 | 3307   |
-| zookeeper           | 192.168.1.102 | 2181   |
-| redis               | 192.168.1.102 | 6379   |
+### 服务运行环境说明
+
+#### 使用软件
+
+- CentOS 7
+- Docker 19.03.2
+- Springboot 2.2.4.RELEASE
+- zuul 1.5.10.RELEASE
+- thrift 0.13.0
+- IntelliJ Idea
+- MySQL 8.0.19
+- Zookeeper
+- Redis
+- Java 8
+- Dubbo 2.7.5
+- Moba Xterm (SSH工具)
+- Github
+
+#### 服务名称，IP地址等描述
+
+| 服务名称             | IP地址        | 端口号 |
+| :------------------- | :------------ | :----- |
+| user-thrift-service  | 192.168.1.102 | 7911   |
+| user-edge-service    | 192.168.1.102 | 8082   |
+| message-service      | 192.168.1.102 | 9090   |
+| course-dubbo-service | 192.168.1.102 | 8081   |
+| course-edge-service  | 192.168.1.102 | 8083   |
+| api-gateway-zuul     | 192.168.1.102 | 8080   |
+| **mysql**            | 192.168.1.102 | 3307   |
+| **zookeeper**        | 192.168.1.102 | 2181   |
+| **redis**            | 192.168.1.102 | 6379   |
+
+> **注意：**
+>
+> 在使用 Docker 部署 **user-thrift-service, user-edge-service, message-service, course-dubbo-service,** 
+>
+> **course-edge-service, api-gateway-zuul** 这几个服务的时候，使用 docker-compose 来做程序启动时候的
+>
+> 配置，api-gateway-zuul 作为整个以上六个服务的入口，唯一开放方端口号。这六个程序之间通讯通过
+>
+> docker-compose 创建整个服务时候，默认创建的 bridge 网络。进入 api-gateway-zuul 容器内， 执行 
+>
+> ping user-thrift-service 可以 ping 得通。
+>
+> 
+>
+> 另外，**mysql, zookeeper, redis** 这几个作为基础服务(**外围服务**)。在做连接得时候，一定要记得对外开放端
+>
+> 口，可以参考[文章](https://markshen1992.github.io/document/devops/ops/linux/linux_basic_command.html)。 
+>
+> 
+>
+> 这次部署使用虚拟机工具 VMware Workstation 来做部署安装 Linux OS。Linux OS IP 是 192.168.1.102， 
+>
+> 请换成你自己机器的 IP 地址。
 
 # Docker 容器部署应用程序
 

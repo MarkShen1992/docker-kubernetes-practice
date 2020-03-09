@@ -1,6 +1,6 @@
 # Docker 运行容器命令
 ```
-docker run -it user-service:latest --mysql.address=192.168.1.101 --username=root --password=aA111111
+docker run -it user-service:latest --mysql.address=192.168.1.101 --mysql.username=root --mysql.password=aA111111
 ```
 
 # build.sh 不能运行

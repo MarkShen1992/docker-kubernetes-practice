@@ -16,5 +16,5 @@ vim build.sh
 # docker 运行
 
 ```
-docker run -it course-dubbo-service:latest --mysql.address=192.168.1.102 --username=root --password=aA111111 --zk.address=192.168.1.102
+docker run -it course-dubbo-service:latest --mysql.address=192.168.1.102 --mysql.username=root --mysql.password=aA111111 --zk.address=192.168.1.102
 ```
