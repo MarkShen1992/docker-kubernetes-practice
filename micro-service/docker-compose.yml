@@ -10,43 +10,43 @@ services:
     image: user-thrift-service:latest
     container_name: user-thrift-service
     command:
-      - "--mysql.address=192.168.1.102"
-      - "--mysql.username=root"
-      - "--mysql.password=aA111111"
+    - "--mysql.address=192.168.1.102"
+    - "--mysql.username=root"
+    - "--mysql.password=aA111111"
 
   user-edge-service:
     image: user-edge-service:latest
     container_name: user-edge-service
     links:
-      - user-thrift-service
-      - message-service
+    - user-thrift-service
+    - message-service
     command:
-      - "--redis.address=192.168.1.102"
+    - "--redis.address=192.168.1.102"
 
   course-dubbo-service:
     image: course-dubbo-service:latest
     container_name: course-dubbo-service
     links:
-      - user-thrift-service
+    - user-thrift-service
     command:
-      - "--mysql.address=192.168.1.102"
-      - "--mysql.username=root"
-      - "--mysql.password=aA111111"
-      - "--zk.address=192.168.1.102"
+    - "--mysql.address=192.168.1.102"
+    - "--mysql.username=root"
+    - "--mysql.password=aA111111"
+    - "--zk.address=192.168.1.102"
 
   course-edge-service:
     image: course-edge-service:latest
     container_name: course-edge-service
     links:
-      - user-edge-service
+    - user-edge-service
     command:
-      - "--zk.address=192.168.1.102"
+    - "--zk.address=192.168.1.102"
 
   api-gateway-zuul:
     image: api-gateway-zuul:latest
     container_name: api-gateway-zuul
     links:
-      - user-edge-service
-      - course-edge-service
+    - user-edge-service
+    - course-edge-service
     ports:
-      - 80:80
+    - 80:80
