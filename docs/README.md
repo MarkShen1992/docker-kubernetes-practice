@@ -140,3 +140,10 @@ docker-compose up -d service-name --单独启动某个服务
   docker pull localhost:5000/registry:sjy
   ```
 
+# 三大容器编排框架-分层思想
+
+## [Mesos](https://mesos.apache.org/)
+
+- 在同一台机器上运行多个任务这一目的， Mesos 使用了隔离模块，使用了[进程隔离的机制](https://coolshell.cn/articles/17049.html)。
+- [Mesos调度流程](https://blog.csdn.net/fujianfafu/article/details/80861017)
+- [Marathon](http://mesosphere.github.io/marathon/) 
