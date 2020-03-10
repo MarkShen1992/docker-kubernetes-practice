@@ -147,3 +147,25 @@ docker-compose up -d service-name --单独启动某个服务
 - 在同一台机器上运行多个任务这一目的， Mesos 使用了隔离模块，使用了[进程隔离的机制](https://coolshell.cn/articles/17049.html)。
 - [Mesos调度流程](https://blog.csdn.net/fujianfafu/article/details/80861017)
 - [Marathon](http://mesosphere.github.io/marathon/) 
+  - 长期运行不间断的服务，MySQL, redis等
+- [Chronos](https://mesos.github.io/chronos/)
+  - 运行定时任务
+- [Aurora](http://aurora.apache.org/)
+  - long-running services and cron jobs
+
+## Mesos特征
+
+- 资源管理
+- Kernel与Framework隔离
+- 门槛低，易于使用
+- 大厂在使用
+
+## Marathon特征
+
+- 高可用
+- Constraints
+- 服务发现与负载均衡
+- 健康检查 TCP / HTTP / Shell
+- 事件订阅 **观察者模式**
+- 完善的REST API 
+
