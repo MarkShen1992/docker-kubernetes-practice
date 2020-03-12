@@ -154,3 +154,65 @@ docker-compose up -d service-name --单独启动某个服务
   # step 04 pull 到本地
   docker pull localhost:5000/registry:sjy
   ```
+
+### 3. harbor的搭建
+
+- harbor 版本
+  - [harbor.v1.10.1.tar.gz](https://github.com/goharbor/harbor)
+
+- harbor 配置修改 `harbor.yml` 文件，需要修改的部分见下面的代码块
+
+  ```
+  hostname: hub.privateimage.com
+  harbor_admin_password: 
+  
+  # 以上内容配置完后，执行脚本 install.sh 完成 harbor 的安装
+  ./install.sh
+  ```
+
+- 推送镜像到 `Harbor`上，出现问题，需要在 `/etc/docker/daemon.json` 配置
+
+  ```
+  {
+    "registry-mirrors": ["https://xxx.mirror.aliyuncs.com"],
+    "insecure-registries": ["hub.image.com"]
+  }
+  ```
+
+  `insecure-registries` 配置成自己机器的 IP 地址 或 域名即可。同时在 `/etc/hosts` 文件中加上关联。
+
+- 使用 `docker-compose` 停掉 harbor
+
+  ```
+  docker-compose down
+  ```
+
+- 重新启动 docker 服务
+
+  ```
+  service docker restart
+  ```
+
+- 重新启动 harbor
+
+  ```
+  docker-compose up -d
+  ```
+
+- 使用 `docker login` 命令登录到 harbor 上
+
+  ```
+  docker login hub.image.com # 输入 用户名/密码 即可
+  ```
+
+- 使用 `docker tag` 命令打包原有镜像，其中 `test` 是项目的名称，需要在 `harbor` 中自己创建
+
+  ```
+  docker tag openjdk:8 hub.image.com/test/openjdk:8
+  ```
+
+- 推送镜像到 `harbor` 中
+
+  ```
+  docker push hub.image.com/test/openjdk:8
+  ```
