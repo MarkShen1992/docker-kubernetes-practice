@@ -72,6 +72,21 @@
 
 ### 使用 Docker 的 docker-compose 来实现
 
+分享几个docker国内镜像源，修改文件`/etc/docker/daemon.json`。
+
+```
+{
+  "registry-mirrors": [
+     "https://3laho3y3.mirror.aliyuncs.com",
+     "http://hub-mirror.c.163.com",
+     "http://f1361db2.m.daocloud.io",
+     "https://docker.mirrors.ustc.edu.cn",
+     "https://registry.docker-cn.com",
+     "https://mirror.ccs.tencentyun.com"
+  ]
+}
+```
+
 使用 `docker compose`去描述服务之间的关系非常好用，当然也可以使用 Docker 命令去建立 link 关系
 
 在使用[Docker compose](https://github.com/docker/compose/releases)前要对其进行安装
@@ -140,32 +155,64 @@ docker-compose up -d service-name --单独启动某个服务
   docker pull localhost:5000/registry:sjy
   ```
 
-# 三大容器编排框架-分层思想
+### 3. harbor的搭建
 
-## [Mesos](https://mesos.apache.org/)
+- harbor 版本
+  - [harbor.v1.10.1.tar.gz](https://github.com/goharbor/harbor)
 
-- 在同一台机器上运行多个任务这一目的， Mesos 使用了隔离模块，使用了[进程隔离的机制](https://coolshell.cn/articles/17049.html)。
-- [Mesos调度流程](https://blog.csdn.net/fujianfafu/article/details/80861017)
-- [Marathon](http://mesosphere.github.io/marathon/) 
-  - 长期运行不间断的服务，MySQL, redis等
-- [Chronos](https://mesos.github.io/chronos/)
-  - 运行定时任务
-- [Aurora](http://aurora.apache.org/)
-  - long-running services and cron jobs
+- harbor 配置修改 `harbor.yml` 文件，需要修改的部分见下面的代码块
 
-## Mesos特征
+  ```
+  hostname: hub.privateimage.com
+  harbor_admin_password: 
+  
+  # 以上内容配置完后，执行脚本 install.sh 完成 harbor 的安装
+  ./install.sh
+  ```
 
-- 资源管理
-- Kernel与Framework隔离
-- 门槛低，易于使用
-- 大厂在使用
+- 推送镜像到 `Harbor`上，出现问题，需要在 `/etc/docker/daemon.json` 配置
 
-## Marathon特征
+  ```
+  {
+    "registry-mirrors": ["https://xxx.mirror.aliyuncs.com"],
+    "insecure-registries": ["hub.image.com"]
+  }
+  ```
 
-- 高可用
-- Constraints
-- 服务发现与负载均衡
-- 健康检查 TCP / HTTP / Shell
-- 事件订阅 **观察者模式**
-- 完善的REST API 
+  `insecure-registries` 配置成自己机器的 IP 地址 或 域名即可。同时在 `/etc/hosts` 文件中加上关联。
 
+- 使用 `docker-compose` 停掉 harbor
+
+  ```
+  docker-compose down
+  ```
+
+- 重新启动 docker 服务
+
+  ```
+  service docker restart
+  ```
+
+- 重新启动 harbor
+
+  ```
+  docker-compose up -d
+  ```
+
+- 使用 `docker login` 命令登录到 harbor 上
+
+  ```
+  docker login hub.image.com # 输入 用户名/密码 即可
+  ```
+
+- 使用 `docker tag` 命令打包原有镜像，其中 `test` 是项目的名称，需要在 `harbor` 中自己创建
+
+  ```
+  docker tag openjdk:8 hub.image.com/test/openjdk:8
+  ```
+
+- 推送镜像到 `harbor` 中
+
+  ```
+  docker push hub.image.com/test/openjdk:8
+  ```

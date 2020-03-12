@@ -1,4 +1,4 @@
-FROM python-base:latest
+FROM hub.image.com/micro-service/python-base:latest
 MAINTAINER MarkShen markshen1992@gmail.com
 
 ENV PYTHONPATH /
