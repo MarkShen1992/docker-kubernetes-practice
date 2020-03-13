@@ -158,8 +158,9 @@ docker-compose up -d service-name --单独启动某个服务
 ### 3. harbor的搭建
 
 - harbor 版本
-  - [harbor.v1.10.1.tar.gz](https://github.com/goharbor/harbor)
-
+  
+- [harbor.v1.10.1.tar.gz](https://github.com/goharbor/harbor)
+  
 - harbor 配置修改 `harbor.yml` 文件，需要修改的部分见下面的代码块
 
   ```
@@ -216,3 +217,19 @@ docker-compose up -d service-name --单独启动某个服务
   ```
   docker push hub.image.com/test/openjdk:8
   ```
+
+
+
+# 服务在 Mesos 集群中的部署
+
+| 服务名称            | Port  |
+| ------------------- | ----- |
+| user-thrift-service | 10001 |
+| message-server      | 10002 |
+| user-edge-service   | 10003 |
+| course-edge-service | 10004 |
+| api-gateway-service | 10005 |
+
+在 `slave` 上的 `/etc/hosts` 文件中 Map `lb.marathon.com` 
+
+查看服务运行的端口：`netstat -na | grep port` 

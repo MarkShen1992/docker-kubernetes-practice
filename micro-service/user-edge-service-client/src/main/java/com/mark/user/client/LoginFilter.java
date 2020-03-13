@@ -68,8 +68,10 @@ public abstract class LoginFilter implements Filter {
 
     protected abstract void login(HttpServletRequest request, HttpServletResponse response, UserDTO userDTO);
 
+    protected abstract String getUserEdgeServiceAddr();
+
     private UserDTO requestUserInfo(String token) {
-        String url = "http://user-edge-service:8082/user/authentication";
+        String url = "http://" + getUserEdgeServiceAddr()  + "/user/authentication";
 
         // 使用HTTP Client来调用
         HttpClient client = new DefaultHttpClient();
