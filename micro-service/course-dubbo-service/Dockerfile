@@ -1,4 +1,4 @@
-FROM openjdk:8
+FROM hub.image.com/micro-service/openjdk:8
 MAINTAINER MarkShen markshen1992@gmail.com
 
 RUN mkdir /service
