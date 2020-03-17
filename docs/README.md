@@ -72,21 +72,6 @@
 
 ### 使用 Docker 的 docker-compose 来实现
 
-分享几个docker国内镜像源，修改文件`/etc/docker/daemon.json`。
-
-```
-{
-  "registry-mirrors": [
-     "https://3laho3y3.mirror.aliyuncs.com",
-     "http://hub-mirror.c.163.com",
-     "http://f1361db2.m.daocloud.io",
-     "https://docker.mirrors.ustc.edu.cn",
-     "https://registry.docker-cn.com",
-     "https://mirror.ccs.tencentyun.com"
-  ]
-}
-```
-
 使用 `docker compose`去描述服务之间的关系非常好用，当然也可以使用 Docker 命令去建立 link 关系
 
 在使用[Docker compose](https://github.com/docker/compose/releases)前要对其进行安装
@@ -155,64 +140,129 @@ docker-compose up -d service-name --单独启动某个服务
   docker pull localhost:5000/registry:sjy
   ```
 
-### 3. harbor的搭建
+# Docker Swarm
 
-- harbor 版本
-  - [harbor.v1.10.1.tar.gz](https://github.com/goharbor/harbor)
+![Docker Swarm Arch](https://github.com/MarkShen1992/docker-kubernetes-practice/blob/docker-swarm-env-deploy/docs/Docker swarm arch.jpg)
 
-- harbor 配置修改 `harbor.yml` 文件，需要修改的部分见下面的代码块
+调度模块 -- filter
 
-  ```
-  hostname: hub.privateimage.com
-  harbor_admin_password: 
+- Constraints
+- Affinity
+- Dependency
+- Health filter
+- Ports filter
+
+调度策略 -- Strategy
+
+- Binpack
+- Spread
+- Random
+
+服务发现
+
+- Ingress<外>
+
+- Ingress + link(一个服务依赖于另一个服务)<内>
+
+- 自定义网络<内>
+
+  ```shell
+  # 创建自定义网络
+  docker network create --driver=overlay --attachable mynet
   
-  # 以上内容配置完后，执行脚本 install.sh 完成 harbor 的安装
-  ./install.sh
+  # 创建服务
+  docker service create -p 80:80 --network=mynet --name nginx nginx:latest
   ```
 
-- 推送镜像到 `Harbor`上，出现问题，需要在 `/etc/docker/daemon.json` 配置
+服务编排
 
-  ```
-  {
-    "registry-mirrors": ["https://xxx.mirror.aliyuncs.com"],
-    "insecure-registries": ["hub.image.com"]
-  }
+- 服务部署 & 服务发现
+- 服务更新 `docker service update`
+- 服务扩缩容 `docker service scale`
+
+Swarm 特点
+
+- 对外以 Docker API 接口呈现
+- 轻量，节省资源
+- 插件化的机制
+- 对Docker 命令支持完善
+
+## 集群环境搭建
+
+环境
+
+- 3台 Linux 服务器，每台服务器上安装 Docker
+
+- ip地址分别对应
+
+  `192.168.1.102(主)`, `192.168.1.103`,`192.168.1.104`
+
+  ```shell
+  # 在 1.2 这个节点上执行
+  docker swarm init --advertise-addr 192.168.1.102
+  
+  # 分别在 1.103 和 1.104 上运行
+  docker swarm join --token SWMTKN-1-0zbj4o6v3p2r1lmagkegcliv6fzeul655wi5uoqcx9ve0sme2h-dexm5djiadqea6x64qlwcyzxe 192.168.1.102:2377
+  
+  # 使用 docker node ls 查看当节点的状态
+  docker node ls
+  
+  # 在 swarm 集群的 Manager 节点中执行命令
+  docker node promote ID/HOSTNAME
+  
+  # 创建服务
+  docker service create --name test alpine ping www.baidu.com
+  
+  # 查看服务
+  docker service ls
+  
+  # 查看服务详细信息
+  docker service inspect test
+  
+  # 查看服务日志
+  docker logs -f test
+  
+  # nginx 服务创建
+  docker service create --name nginx nginx
+  
+  # 暴露服务运行端口
+  docker service update --publish-add 8080:80 --detach=false nginx
+  
+  # 扩容 nginx，扩容的时候，并不是每台机器上各有一个nginx，有可能一台机器上有一个nginx，一个有两台
+  docker service scale nginx=3
+  
+  # 在使用浏览器访问的时候会有服务的负载均衡机制
   ```
 
-  `insecure-registries` 配置成自己机器的 IP 地址 或 域名即可。同时在 `/etc/hosts` 文件中加上关联。
+- 创建自己的网络
 
-- 使用 `docker-compose` 停掉 harbor
-
-  ```
-  docker-compose down
-  ```
-
-- 重新启动 docker 服务
-
-  ```
-  service docker restart
-  ```
-
-- 重新启动 harbor
-
-  ```
-  docker-compose up -d
-  ```
-
-- 使用 `docker login` 命令登录到 harbor 上
-
-  ```
-  docker login hub.image.com # 输入 用户名/密码 即可
+  ```shell
+  # 创建自己的网络
+  docker network create -d overlay mark
+  
+  # 创建服务使用自己创建的网络
+  docker service create --network mark --name nginx -p 8888:80 nginx
+  
+  # 查看某服务运行在集群中那个容器中，记得修改服务的 hostname
+  docker service ps nginx
+  
+  # 进入可以使用 ping 命令的容器中，这个容器网络是 mark，可以使用进行如下操作，看是否可以 ping 通
+  ping nginx
+  
+  # 创建 dnsrr 方式的负载均衡，创建一个 EndPoint 类型为 dnsrr 的服务(容器间通过名字访问，不可指定端口)
+  # 如果不希望服务被外面端口访问，建议定义成 dnsrr 的EndPoint
+  docker service create --name nginx-b --endpoint-mode dnsrr --detach=false nginx
+  
+  # 为服务 nginx-b 添加网络
+  docker service update --network-add mark nginx-b
   ```
 
-- 使用 `docker tag` 命令打包原有镜像，其中 `test` 是项目的名称，需要在 `harbor` 中自己创建
+- docker stack (服务栈/组)
 
-  ```
-  docker tag openjdk:8 hub.image.com/test/openjdk:8
+  给一堆service 分组，在组里定义相互依赖的关系, `service.yml`
+
+  ```yaml
+  
   ```
 
-- 推送镜像到 `harbor` 中
-
-  ```
-  docker push hub.image.com/test/openjdk:8
-  ```
+  
