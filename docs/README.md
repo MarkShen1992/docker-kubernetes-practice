@@ -276,16 +276,16 @@ Swarm 特点
       networks:
         - "mark"
       deploy:
-  	    endpoint_mode: dnsrr
-  	    replicas: 2
-  	    restart_policy:
+  	  endpoint_mode: dnsrr
+  	  replicas: 2
+  	  restart_policy:
           condition: on-failure
         resources:
-  		    limits:
-  		      cpus: "0.1"
-  		      memory: 50M
+  	    limits:
+  	      cpus: "0.1"
+  	      memory: 50M
       depends_on:
-  	    - nginx
+  	  - nginx
   	  
     nginx:
       image: nginx:latest
