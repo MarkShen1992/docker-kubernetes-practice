@@ -267,61 +267,56 @@ Swarm 特点
 
   ```yaml
   version: "3.7"
-  
-  ```
-
-services:
+  services:
     alpine:
-      image: alpine:3.4
+      image: alpine:3.5
       command:
         - "ping"
         - "www.baidu.com"
       networks:
         - "mark"
       deploy:
-        endpoint_mode: dnsrr
-        replicas: 2
-        restart_policy:
-          condition: on-failure
+  	  endpoint_mode: dnsrr
+  	  replicas: 2
+  	  restart_policy:
+        	condition: on-failure
         resources:
-          limits:
-            cpus: "0.1"
-            memory: 50M
+  		limits:
+  		  cpus: "0.1"
+  		  memory: 50M
       depends_on:
-        - nginx
-
+  	  - nginx
+  	  
     nginx:
       image: nginx:latest
       networks:
         - "mark"
       ports:
         - "8080:80"
-
+        
   networks:
     mark:
-      external: true
+      external: true      
   ```
   
-  运行服务
+   运行服务
   
   ```shell
   docker stack deploy -c service.yml test
   ```
-
+  
   查看运行服务
-
+  
   ```shell
   docker stack services test
   docker stack ps test
   docker stack ls
-  
+    
   docker service ls
   ```
-
+  
   终止服务
-
-  ```
+  
+  ```shell
   docker stack rm test
   ```
-
-  
