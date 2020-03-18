@@ -247,7 +247,11 @@ Swarm 特点
   docker service ps nginx
   
   # 进入可以使用 ping 命令的容器中，这个容器网络是 mark，可以使用进行如下操作，看是否可以 ping 通
-  ping nginx
+  docker service create --name test alpine:3.5 ping www.baidu.com
+  docker service update --network-add mark test
+  docker service ps test # 查看服务在那台机器的 docker 中运行
+  docker exec -it ID sh # 进入容器
+  ping nginx # 通过名字访问容器
   
   # 创建 dnsrr 方式的负载均衡，创建一个 EndPoint 类型为 dnsrr 的服务(容器间通过名字访问，不可指定端口)
   # 如果不希望服务被外面端口访问，建议定义成 dnsrr 的EndPoint
@@ -262,7 +266,60 @@ Swarm 特点
   给一堆service 分组，在组里定义相互依赖的关系, `service.yml`
 
   ```yaml
+  version: "3.7"
+  
+services:
+    alpine:
+      image: alpine:3.4
+      command:
+        - "ping"
+        - "www.baidu.com"
+      networks:
+        - "mark"
+      deploy:
+        endpoint_mode: dnsrr
+        replicas: 2
+        restart_policy:
+          condition: on-failure
+        resources:
+          limits:
+            cpus: "0.1"
+            memory: 50M
+      depends_on:
+        - nginx
+  
+    nginx:
+      image: nginx:latest
+      networks:
+        - "mark"
+      ports:
+        - "8080:80"
+  
+  networks:
+    mark:
+      external: true
+  ```
+  
+  运行服务
+  
+  ```shell
+  docker stack deploy -c service.yml test
+  ```
+  
+  查看运行服务
+  
+  ```shell
+  docker stack services test
+  docker stack ps test
+  docker stack ls
+  
+  docker service ls
+  ```
+  
+  终止服务
   
   ```
-
+  docker stack rm test
+  ```
+  
   

@@ -1,0 +1,100 @@
+version: "3.7"
+
+services:
+  message-service:
+    image: hub.image.com/micro-service/message-service:latest
+    deploy:
+      endpoint_mode: dnsrr
+      replicas: 2
+      resources:
+        limits:
+          cpus: "0.2"
+          memory: "128M"
+      restart_policy:
+        condition: on-failure
+
+  user-thrift-service:
+    image: hub.image.com/micro-service/user-thrift-service:latest
+    deploy:
+      endpoint_mode: dnsrr
+      resources:
+        limits:
+          cpus: "0.2"
+          memory: "512M"
+    command:
+      - "--mysql.address=192.168.1.104"
+      - "--mysql.username=root"
+      - "--mysql.password=aA111111"
+
+  user-edge-service:
+    image: hub.image.com/micro-service/user-edge-service:latest
+    deploy:
+      endpoint_mode: vip
+      resources:
+        limits:
+          cpus: "0.2"
+          memory: "512M"
+      placement:
+        constraints: [ node.role == manager ]
+    ports:
+      - "8082:8082"
+    command:
+      - "--redis.address=192.168.1.104"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8082/user/login"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      - user-thrift-service
+      - message-service
+
+  course-dubbo-service:
+    image: hub.image.com/micro-service/course-dubbo-service:latest
+    deploy:
+      endpoint_mode: dnsrr
+      resources:
+        limits:
+          cpus: "0.2"
+          memory: "512M"
+    command:
+      - "--mysql.address=192.168.1.104"
+      - "--mysql.username=root"
+      - "--mysql.password=aA111111"
+      - "--zk.address=192.168.1.104"
+    depends_on:
+      - user-thrift-service
+
+  course-edge-service:
+    image: hub.image.com/micro-service/course-edge-service:latest
+    deploy:
+      endpoint_mode: vip
+      resources:
+        limits:
+          cpus: "0.2"
+          memory: "512M"
+    ports:
+      - "8083:8083"
+    command:
+      - "--zk.address=192.168.1.104"
+    depends_on:
+      - user-edge-service
+
+  api-gateway-zuul:
+    image: hub.image.com/micro-service/api-gateway-zuul:latest
+    deploy:
+      endpoint_mode: vip
+      resources:
+        limits:
+          cpus: "0.2"
+          memory: "512M"
+    ports:
+      - "80:80"
+    depends_on:
+      - user-edge-service
+      - course-edge-service
+
+networks:
+  hostnet:
+    external: true
+    name: mark
