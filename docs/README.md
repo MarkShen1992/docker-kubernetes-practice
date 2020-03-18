@@ -263,7 +263,7 @@ Swarm 特点
 
 - docker stack (服务栈/组)
 
-  给一堆service 分组，在组里定义相互依赖的关系, [service.yml]()  
+  给一堆service 分组，在组里定义相互依赖的关系, [service.yml](https://github.com/MarkShen1992/docker-kubernetes-practice/blob/docker-swarm-env-deploy/docs/service.yml)  
 
   运行服务
   
