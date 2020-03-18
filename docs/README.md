@@ -263,42 +263,8 @@ Swarm 特点
 
 - docker stack (服务栈/组)
 
-  给一堆service 分组，在组里定义相互依赖的关系, `service.yml`
+  给一堆service 分组，在组里定义相互依赖的关系, [service.yml]()  
 
-  ```yaml
-  version: "3.7"
-  services:
-    alpine:
-      image: alpine:3.5
-      command:
-        - "ping"
-        - "www.baidu.com"
-      networks:
-        - "mark"
-      deploy:
-  	  endpoint_mode: dnsrr
-  	  replicas: 2
-  	  restart_policy:
-          condition: on-failure
-        resources:
-  	    limits:
-  	      cpus: "0.1"
-  	      memory: 50M
-      depends_on:
-  	  - nginx
-  	  
-    nginx:
-      image: nginx:latest
-      networks:
-        - "mark"
-      ports:
-        - "8080:80"
-        
-  networks:
-    mark:
-      external: true   
-  ```
-  
   运行服务
   
   ```shell
