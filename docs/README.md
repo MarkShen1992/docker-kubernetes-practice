@@ -142,7 +142,7 @@ docker-compose up -d service-name --单独启动某个服务
 
 # Docker Swarm
 
-![Docker Swarm Arch](https://github.com/MarkShen1992/docker-kubernetes-practice/blob/docker-swarm-env-deploy/docs/Docker swarm arch.jpg)
+![Docker Swarm Arch](https://github.com/MarkShen1992/docker-kubernetes-practice/blob/docker-swarm-env-deploy/docs/Docker%20swarm%20arch.jpg)
 
 调度模块 -- filter
 
@@ -268,6 +268,8 @@ Swarm 特点
   ```yaml
   version: "3.7"
   
+  ```
+
 services:
     alpine:
       image: alpine:3.4
@@ -287,14 +289,14 @@ services:
             memory: 50M
       depends_on:
         - nginx
-  
+
     nginx:
       image: nginx:latest
       networks:
         - "mark"
       ports:
         - "8080:80"
-  
+
   networks:
     mark:
       external: true
@@ -305,9 +307,9 @@ services:
   ```shell
   docker stack deploy -c service.yml test
   ```
-  
+
   查看运行服务
-  
+
   ```shell
   docker stack services test
   docker stack ps test
@@ -315,11 +317,11 @@ services:
   
   docker service ls
   ```
-  
+
   终止服务
-  
+
   ```
   docker stack rm test
   ```
-  
+
   
