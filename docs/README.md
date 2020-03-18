@@ -296,10 +296,10 @@ Swarm 特点
         
   networks:
     mark:
-      external: true      
+      external: true   
   ```
   
-   运行服务
+  运行服务
   
   ```shell
   docker stack deploy -c service.yml test
