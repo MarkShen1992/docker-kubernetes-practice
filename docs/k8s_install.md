@@ -1,14 +1,50 @@
-## 6k8s安装
+## k8s安装
+
+- 由于本环境 k8s 版本是 k8s1.9， 其 [对应的 docker 版本][1] 是
+
+  - **`1.11.2`** to **`1.13.1`**
+  - **`17.03.x`**
+  
+- 可以安装 `Docker17.03.x` 的 `CentOS` 版本
+
+  - [`CentOS-7-x86_64-Minimal-2003.iso`][2]
 
 - 环境准备
 
   | 系统类型 | ip地址        | 节点角色 | CPU  | Memory | Hostname |
   | -------- | ------------- | -------- | ---- | ------ | -------- |
-  | CentOS 7 | 192.168.31.46 | Master   | 1    | 2G     | server01 |
-  | CentOS 7 | 192.168.31.47 | Worker   | 1    | 2G     | server02 |
-  | CentOS 7 | 192.168.31.48 | Worker   | 1    | 2G     | server03 |
+  | CentOS 7 | 192.168.31.50 | Master   | 1    | 2G     | server01 |
+  | CentOS 7 | 192.168.31.51 | Worker   | 1    | 2G     | server02 |
+  | CentOS 7 | 192.168.31.52 | Worker   | 1    | 2G     | server03 |
 
-- 安装 docker, 可以参照[官方文档](https://docs.docker.com/engine/install/centos/)
+- 安装 `docker`，[软件包下载地址][3]
+
+  ```
+  docker-engine-selinux-17.03.1.ce-1.el7.centos.noarch.rpm
+  docker-engine-17.03.1.ce-1.el7.centos.x86_64.rpm
+  docker-engine-debuginfo-17.03.1.ce-1.el7.centos.x86_64.rpm
+  
+  # 下载好这三个软件包后，执行安装命令
+  yum localinstall -y *.rpm
+  systemctl enable docker
+  ```
+
+- 配置docker镜像加速
+
+  ```
+  cat <<EOF > /etc/docker/daemon.json
+  {
+      "registry-mirrors": [
+       	"https://3laho3y3.mirror.aliyuncs.com",
+       	"http://hub-mirror.c.163.com",
+       	"http://f1361db2.m.daocloud.io",
+       	"https://docker.mirrors.ustc.edu.cn",
+       	"https://registry.docker-cn.com",
+       	"https://mirror.ccs.tencentyun.com"
+    	]
+  }
+  EOF
+  ```
 
 - 在文件`/usr/lib/systemd/system/docker.service` 添加下面的代码， 接受所有ip的数据包转发
 
@@ -122,3 +158,12 @@
   ```
 
   
+
+
+
+
+
+[1]:https://stackoverflow.com/questions/48950827/docker-version-supported-in-kubernetes-1-9
+[2]:http://mirrors.sohu.com/centos/7/isos/x86_64/
+[3]:https://mirrors.mediatemple.net/docker/centos/7/Packages/
+
