@@ -106,7 +106,18 @@
 
   - 在文件 `/etc/profile` 中添加 path
 
-- 安装 `etcd` 在主节点上
+  - 重新生效 `source /etc/profile`
+
+  > **注意：**
+  >
+  > - 本文中所有脚本取于 [kubernetes-starter](https://github.com/liuyi01/kubernetes-starter)
+  > - 一定要**关闭电脑防火墙**
+  > - 去除 `^M` 字符
+  >   - `dos2unix filename`
+  >   - `sed -e ‘s/^M/\n/g’ filename`
+
+
+- 安装 `etcd` 在**主节点**上
 
   ```
   #把服务配置文件copy到系统服务目录
@@ -121,7 +132,7 @@
   journalctl -f -u etcd.service
   ```
 
-- 安装 `apiserver` 在主节点上
+- 安装 `apiserver` 在**主节点**上
 
   ```
   cp ~/kubernetes-starter/target/master-node/kube-apiserver.service /usr/lib/systemd/system/
@@ -130,7 +141,7 @@
   journalctl -f -u kube-apiserver
   ```
 
-- 安装 `Controller Manager` 在主节点上
+- 安装 `Controller Manager` 在**主节点**上
 
   ```
   cp ~/kubernetes-starter/target/master-node/kube-controller-manager.service /usr/lib/systemd/system/
@@ -139,7 +150,7 @@
   journalctl -f -u kube-controller-manager
   ```
 
-- 安装 `Scheduler` 在主节点上
+- 安装 `Scheduler` 在**主节点**上
 
   ```
   cp ~/kubernetes-starter/target/master-node/kube-scheduler.service /usr/lib/systemd/system/
@@ -148,7 +159,7 @@
   journalctl -f -u kube-scheduler
   ```
 
-- 部署 `CalicoNode` 在所有节点
+- 部署 `CalicoNode` 在**所有节点**上
 
   ```
   cp ~/kubernetes-starter/target/all-node/kube-calico.service /usr/lib/systemd/system/
