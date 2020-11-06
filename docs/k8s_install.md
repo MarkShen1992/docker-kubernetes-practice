@@ -234,6 +234,9 @@
   # 删除部署
   kubectl delete deployments kubernetes-bootcamp
   
+  # 删除 pod
+  kubectl delete pods nginx
+  
   # kubectl get --help 查看短名字
   kubectl get deploy
   
