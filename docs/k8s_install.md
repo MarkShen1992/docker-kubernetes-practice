@@ -335,13 +335,78 @@
           - containerPort: 80
   ```
 
-  ```
+  ```shell
   # 部署 deploy
   kubectl create -f nginx-deployment.yaml
   kubectl get pods -l app=nginx
   ```
 
+- 为集群添加 service 功能 - kube-proxy (工作节点)
+
+  ```shell
+  # 确保工作目录存在
+  mkdir -p /var/lib/kube-proxy
   
+  # 复制kube-proxy服务配置文件
+  cp ~/kubernetes-starter/target/worker-node/kube-proxy.service /usr/lib/systemd/system/
+  
+  # 复制kube-proxy依赖的配置文件
+  cp ~/kubernetes-starter/target/worker-node/kube-proxy.kubeconfig /etc/kubernetes/
+  
+  systemctl enable kube-proxy.service
+  service kube-proxy start
+  journalctl -f -u kube-proxy
+  
+  # k8s service : api-server 创建的时候就有了这个服务
+  kubectl get services
+  
+  # 查看服务信息
+  kubectl describe services kubernetes
+  
+  # 使用kube-proxy访问到我们的pod
+  # target-port：容器的端口
+  # port：服务的端口
+  kubectl expose deploy nginx-deployment --type="NodePort" --target-port=80 --port=80
+  
+  # 查看 service 的个数
+  kubectl get services
+  ```
+
+- `nginx-service.yaml`
+
+  ```
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: nginx-service
+  spec:
+    ports:
+    - port: 8080
+      targetPort: 80
+      nodePort: 20000
+    selector:
+      app: nginx
+    type: NodePort
+  ```
+
+  ```yaml
+  # 创建 kube-service
+  kubectl create -f nginx-service.yaml
+  kubectl get svc
+  ```
+
+- 安装 `kube-dns` 组件
+
+  ```shell
+  kubectl create -f kube-dns.yaml
+  kubectl -n kube-system get svc # kube-system 为内部的命名空间
+  kubectl -n kube-system get deploy
+  kubectl -n kube-system get pods
+  ```
+
+- 添加认证授权功能
+
+  ......
 
 
 
