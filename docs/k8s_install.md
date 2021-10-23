@@ -116,16 +116,24 @@
   >   - `dos2unix filename`
   >   - `sed -e ‘s/^M/\n/g’ filename`
   >   - 使用 vi 或 vim， set ff=unix
+  
+- 生成对应的配置文件
+
+  ```shell
+  ./gen-config.sh simple
+  # 查看端口
+  netstat -ntlp
+  ```
 
 
 - 安装 `etcd` 在**主节点**上
 
   ```shell
-  #把服务配置文件copy到系统服务目录
+  # 把服务配置文件copy到系统服务目录
   cp ~/kubernetes-starter/target/master-node/etcd.service /usr/lib/systemd/system/
-  #enable服务
+  # enable服务
   systemctl enable etcd.service
-  #创建工作目录(保存数据的地方)
+  # 创建工作目录(保存数据的地方)
   mkdir -p /var/lib/etcd
   # 启动服务
   service etcd start
@@ -167,31 +175,42 @@
   systemctl enable kube-calico.service
   service kube-calico start
   journalctl -f -u kube-calico
+  
+  # 注意：
+  # 如果关机重启服务，如果要重启 calico-node 那么首先要做下面的事情：
+    service kube-calico stop
+    docker stop calico-node
+    docker rm calico-node
+    service kube-calico start
+    journalctl -f -u kube-calico
+    
+  # 测试网络已经配置好的命令
+    calicoctl node status
   ```
 
 - 配置 `kubectl` 命令（任意节点）
 
   ```shell
   # 设置 api-server 和 上下文
-  # #指定apiserver地址（ip替换为你自己的api-server地址）
+  # 指定apiserver地址（ip替换为你自己的api-server地址）
   kubectl config set-cluster kubernetes  --server=http://192.168.31.50:8080
   
-  # #指定设置上下文，指定cluster
+  # 指定设置上下文，指定cluster
   kubectl config set-context kubernetes --cluster=kubernetes
   
-  #选择默认的上下文
+  # 选择默认的上下文
   kubectl config use-context kubernetes
   ```
 
 - 配置 `kubelet` (Worker节点)
 
   ```shell
-  #确保相关目录存在
+  # 确保相关目录存在
   mkdir -p /var/lib/kubelet
   mkdir -p /etc/kubernetes
   mkdir -p /etc/cni/net.d
   
-  #复制kubelet服务配置文件
+  # 复制kubelet服务配置文件
   cp ~/kubernetes-starter/target/worker-node/kubelet.service /usr/lib/systemd/system/
   cp ~/kubernetes-starter/target/worker-node/kubelet.kubeconfig /etc/kubernetes/
   cp ~/kubernetes-starter/target/worker-node/10-calico.conf /etc/cni/net.d/
