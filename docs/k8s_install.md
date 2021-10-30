@@ -17,6 +17,13 @@
   | CentOS 7 | 192.168.31.51 | Worker   | 1    | 2G     | server02 |
   | CentOS 7 | 192.168.31.52 | Worker   | 1    | 2G     | server03 |
 
+- 安装`docker`之前，要先安装`iptables`,这里的[iptable版本](http://buildlogs-seed.centos.org/c7.1804.00.x86_64/iptables/20180412174108/1.4.21-24.el7.x86_64/).
+
+  ```sh
+  rpm -Uvh iptables-1.4.21-24.el7.x86_64.rpm 
+  rpm -Uvh iptables-services-1.4.21-24.el7.x86_64.rpm 
+  ```
+
 - 安装 `docker`，[软件包下载地址][3]
 
   ```shell
@@ -57,7 +64,10 @@
 
   ```shell
   systemctl daemon-reload
-  service docker restart
+  systemctl start docker
+  
+  # 安装防火墙，如果已安装就不用安装了
+  yum install firewalld -y
   ```
 
 - 系统设置
@@ -188,7 +198,7 @@
     calicoctl node status
   ```
 
-- 配置 `kubectl` 命令（任意节点）
+- 配置 `kubectl` 命令（任意节点）本部署放到了**主节点上**
 
   ```shell
   # 设置 api-server 和 上下文
@@ -200,6 +210,8 @@
   
   # 选择默认的上下文
   kubectl config use-context kubernetes
+  
+  # 这几条命令执行完后，可以看下 ~/.kube/config 这个文件，这个文件就是由上面三条命令生成的。
   ```
 
 - 配置 `kubelet` (Worker节点)
@@ -327,6 +339,7 @@
   # 查看 pod 是否起来了
   kubectl get pods
   
+  kubectl proxy
   # 注意区分 pod 和 deploy 概念
   # kubectl run 的时候是创建了一个 deploy
   # 使用代理 kubectl proxy 访问 nginx
